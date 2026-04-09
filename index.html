@@ -24,7 +24,6 @@
             margin-bottom: 30px;
         }
 
-        /* ✅ UPDATED */
         input, textarea, select {
             width: 100%;
             padding: 12px;
@@ -55,6 +54,18 @@
             border-radius: 8px;
             cursor: pointer;
             width: 100%;
+            font-size: 16px;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #1557b0;
+        }
+
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
         }
 
         #status {
@@ -74,6 +85,12 @@
         .error {
             background: #f8d7da;
             color: #721c24;
+            display: block;
+        }
+
+        .loading {
+            background: #fff3cd;
+            color: #856404;
             display: block;
         }
 
@@ -97,6 +114,24 @@
             max-width: 400px;
             text-align: center;
         }
+
+        .modal-content button {
+            width: auto;
+            padding: 10px 30px;
+            margin-top: 10px;
+        }
+
+        .error-border {
+            border-color: #dc3545 !important;
+        }
+
+        .field-error {
+            color: #dc3545;
+            font-size: 12px;
+            margin-top: -15px;
+            margin-bottom: 10px;
+            display: block;
+        }
     </style>
 </head>
 
@@ -105,45 +140,48 @@
     <h2>📝 Contact Form</h2>
 
     <form id="contactForm">
-
         <label>Full Name *</label>
-        <input type="text" name="name" id="name" required>
+        <input type="text" name="name" id="name">
+        <span class="field-error" id="nameError"></span>
 
         <label>Email *</label>
-        <input type="email" name="email" id="email" required>
+        <input type="email" name="email" id="email">
+        <span class="field-error" id="emailError"></span>
 
         <label>Phone</label>
         <input type="tel" name="phone" id="phone">
+        <span class="field-error" id="phoneError"></span>
 
-        <!-- ✅ ADDED -->
         <label>Department *</label>
-        <select name="department" id="department" required>
-    <option value="">-- Select Department --</option>
-    <option value="Botany">Botany</option>
-    <option value="Chemistry">Chemistry</option>
-    <option value="Commerce">Commerce</option>
-    <option value="Computer Applications">Computer Applications</option>
-    <option value="Economics">Economics</option>
-    <option value="Education">Education</option>
-    <option value="Electronics">Electronics</option>
-    <option value="English">English</option>
-    <option value="Geography">Geography</option>
-    <option value="Hindi">Hindi</option>
-    <option value="History">History</option>
-    <option value="Library Science">Library Science</option>
-    <option value="Mathematics">Mathematics</option>
-    <option value="Microbiology">Microbiology</option>
-    <option value="Physical Education">Physical Education</option>
-    <option value="Physics">Physics</option>
-    <option value="Political Science">Political Science</option>
-    <option value="Sanskrit">Sanskrit</option>
-    <option value="Sociology">Sociology</option>
-    <option value="Teacher Education (B.Ed.)">Teacher Education (B.Ed.)</option>
-    <option value="Zoology">Zoology</option>
-</select>
+        <select name="department" id="department">
+            <option value="">-- Select Department --</option>
+            <option value="Botany">Botany</option>
+            <option value="Chemistry">Chemistry</option>
+            <option value="Commerce">Commerce</option>
+            <option value="Computer Applications">Computer Applications</option>
+            <option value="Economics">Economics</option>
+            <option value="Education">Education</option>
+            <option value="Electronics">Electronics</option>
+            <option value="English">English</option>
+            <option value="Geography">Geography</option>
+            <option value="Hindi">Hindi</option>
+            <option value="History">History</option>
+            <option value="Library Science">Library Science</option>
+            <option value="Mathematics">Mathematics</option>
+            <option value="Microbiology">Microbiology</option>
+            <option value="Physical Education">Physical Education</option>
+            <option value="Physics">Physics</option>
+            <option value="Political Science">Political Science</option>
+            <option value="Sanskrit">Sanskrit</option>
+            <option value="Sociology">Sociology</option>
+            <option value="Teacher Education (B.Ed.)">Teacher Education (B.Ed.)</option>
+            <option value="Zoology">Zoology</option>
+        </select>
+        <span class="field-error" id="departmentError"></span>
 
         <label>Message *</label>
-        <textarea name="message" id="message" required></textarea>
+        <textarea name="message" id="message" rows="4"></textarea>
+        <span class="field-error" id="messageError"></span>
 
         <button type="submit" id="submitBtn">Submit</button>
     </form>
@@ -154,8 +192,8 @@
 <!-- Popup -->
 <div id="thankYouModal" class="modal">
     <div class="modal-content">
-        <h2>Thank You!</h2>
-        <p>Form submitted successfully</p>
+        <h2>🙏 Thank You!</h2>
+        <p>Your form has been submitted successfully.</p>
         <button onclick="closeModal()">Close</button>
     </div>
 </div>
@@ -165,62 +203,187 @@ const scriptURL = 'https://script.google.com/macros/s/AKfycbxJlI5HweYJbt5DP0jaIx
 
 const form = document.getElementById('contactForm');
 const modal = document.getElementById('thankYouModal');
+const submitBtn = document.getElementById('submitBtn');
 
-form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-
-    if (!validateForm()) return;
-
-    const formData = new FormData(form);
-    const data = new URLSearchParams(formData);
-
-    try {
-        const res = await fetch(scriptURL, {
-            method: 'POST',
-            body: data
-        });
-
-        if (res.ok) {
-            form.reset();
-            showPopup();
-        }
-    } catch (err) {
-        alert('Error');
-    }
-});
-
-function validateForm() {
-    const name = document.getElementById('name');
-    const email = document.getElementById('email');
-    const message = document.getElementById('message');
-    const department = document.getElementById('department');
-
-    let valid = true;
-
-    [name, email, message, department].forEach(f => f.style.borderColor = '#e0e0e0');
-
-    if (!name.value) valid = false;
-    if (!email.value.includes('@')) valid = false;
-    if (!message.value) valid = false;
-
-    // ✅ department validation
-    if (!department.value) valid = false;
-
-    if (!valid) {
-        document.getElementById('status').innerText = 'Fill all required fields';
-        document.getElementById('status').className = 'error';
-    }
-
-    return valid;
+// Clear all error messages and borders
+function clearErrors() {
+    const fields = ['name', 'email', 'department', 'message'];
+    fields.forEach(field => {
+        const element = document.getElementById(field);
+        if (element) element.classList.remove('error-border');
+        
+        const errorSpan = document.getElementById(field + 'Error');
+        if (errorSpan) errorSpan.textContent = '';
+    });
+    
+    const statusDiv = document.getElementById('status');
+    statusDiv.style.display = 'none';
+    statusDiv.className = '';
+    statusDiv.textContent = '';
 }
 
+// Validate form with specific error messages
+function validateForm() {
+    clearErrors();
+    
+    const name = document.getElementById('name');
+    const email = document.getElementById('email');
+    const department = document.getElementById('department');
+    const message = document.getElementById('message');
+    
+    let isValid = true;
+    
+    // Name validation
+    if (!name.value.trim()) {
+        document.getElementById('nameError').textContent = 'Full name is required';
+        name.classList.add('error-border');
+        isValid = false;
+    }
+    
+    // Email validation
+    const emailValue = email.value.trim();
+    if (!emailValue) {
+        document.getElementById('emailError').textContent = 'Email is required';
+        email.classList.add('error-border');
+        isValid = false;
+    } else if (!emailValue.includes('@') || !emailValue.includes('.')) {
+        document.getElementById('emailError').textContent = 'Please enter a valid email address';
+        email.classList.add('error-border');
+        isValid = false;
+    }
+    
+    // Department validation
+    if (!department.value) {
+        document.getElementById('departmentError').textContent = 'Please select a department';
+        department.classList.add('error-border');
+        isValid = false;
+    }
+    
+    // Message validation
+    if (!message.value.trim()) {
+        document.getElementById('messageError').textContent = 'Message is required';
+        message.classList.add('error-border');
+        isValid = false;
+    } else if (message.value.trim().length < 10) {
+        document.getElementById('messageError').textContent = 'Message must be at least 10 characters';
+        message.classList.add('error-border');
+        isValid = false;
+    }
+    
+    return isValid;
+}
+
+// Show loading state
+function setLoading(isLoading) {
+    if (isLoading) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Submitting...';
+        const statusDiv = document.getElementById('status');
+        statusDiv.textContent = 'Please wait, submitting your form...';
+        statusDiv.className = 'loading';
+        statusDiv.style.display = 'block';
+    } else {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Submit';
+    }
+}
+
+// Show popup
 function showPopup() {
     modal.style.display = 'block';
 }
 
+// Close popup
 function closeModal() {
     modal.style.display = 'none';
 }
+
+// Close modal when clicking outside
+window.onclick = function(event) {
+    if (event.target === modal) {
+        modal.style.display = 'none';
+    }
+}
+
+// Form submit handler
+form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    // Validate form
+    if (!validateForm()) {
+        return;
+    }
+    
+    // Show loading state
+    setLoading(true);
+    
+    // Create FormData
+    const formData = new FormData(form);
+    const data = new URLSearchParams(formData);
+    
+    try {
+        const res = await fetch(scriptURL, {
+            method: 'POST',
+            mode: 'no-cors', // Add this for Google Apps Script
+            body: data
+        });
+        
+        // Since we're using no-cors, we can't check res.ok properly
+        // So we assume success if no error is thrown
+        form.reset();
+        setLoading(false);
+        showPopup();
+        
+        // Show success message
+        const statusDiv = document.getElementById('status');
+        statusDiv.textContent = 'Form submitted successfully!';
+        statusDiv.className = 'success';
+        statusDiv.style.display = 'block';
+        
+        // Clear success message after 3 seconds
+        setTimeout(() => {
+            statusDiv.style.display = 'none';
+        }, 3000);
+        
+    } catch (err) {
+        console.error('Error:', err);
+        setLoading(false);
+        
+        const statusDiv = document.getElementById('status');
+        statusDiv.textContent = 'Error submitting form. Please try again.';
+        statusDiv.className = 'error';
+        statusDiv.style.display = 'block';
+        
+        // Clear error message after 3 seconds
+        setTimeout(() => {
+            statusDiv.style.display = 'none';
+        }, 3000);
+    }
+});
+
+// Real-time validation (optional - removes error when user starts typing)
+const fields = ['name', 'email', 'department', 'message'];
+fields.forEach(field => {
+    const element = document.getElementById(field);
+    if (element) {
+        element.addEventListener('input', function() {
+            this.classList.remove('error-border');
+            const errorSpan = document.getElementById(field + 'Error');
+            if (errorSpan) errorSpan.textContent = '';
+        });
+    }
+});
+
+// Special handling for email real-time validation
+document.getElementById('email').addEventListener('input', function() {
+    this.classList.remove('error-border');
+    document.getElementById('emailError').textContent = '';
+});
+
+// Phone number validation (optional - only numbers)
+document.getElementById('phone').addEventListener('input', function(e) {
+    this.value = this.value.replace(/[^0-9]/g, '');
+});
 </script>
 </body>
 </html>
