@@ -199,7 +199,8 @@
 </div>
 
 <script>
-const scriptURL = 'https://script.google.com/macros/s/AKfycbxJlI5HweYJbt5DP0jaIxw91GQ4tjc5f8jqncAhdwAIOgC37I3csHCp7iEw0Wl46xcb/exec';
+// IMPORTANT: Yahan apni Google Apps Script URL lagao
+const scriptURL = 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE';
 
 const form = document.getElementById('contactForm');
 const modal = document.getElementById('thankYouModal');
@@ -309,59 +310,58 @@ window.onclick = function(event) {
 form.addEventListener('submit', async (e) => {
     e.preventDefault();
     
-    // Validate form
     if (!validateForm()) {
         return;
     }
     
-    // Show loading state
     setLoading(true);
     
-    // Create FormData
+    // Create FormData and convert to URL encoded string
     const formData = new FormData(form);
-    const data = new URLSearchParams(formData);
+    const urlEncodedData = new URLSearchParams(formData).toString();
+    
+    console.log("Sending data:", urlEncodedData); // Debug
     
     try {
-        const res = await fetch(scriptURL, {
+        const response = await fetch(scriptURL, {
             method: 'POST',
-            mode: 'no-cors', // Add this for Google Apps Script
-            body: data
+            mode: 'no-cors',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: urlEncodedData
         });
         
-        // Since we're using no-cors, we can't check res.ok properly
-        // So we assume success if no error is thrown
+        // Since mode is 'no-cors', we assume success if no error
         form.reset();
         setLoading(false);
         showPopup();
         
-        // Show success message
         const statusDiv = document.getElementById('status');
-        statusDiv.textContent = 'Form submitted successfully!';
+        statusDiv.textContent = '✓ Form submitted successfully!';
         statusDiv.className = 'success';
         statusDiv.style.display = 'block';
         
-        // Clear success message after 3 seconds
         setTimeout(() => {
             statusDiv.style.display = 'none';
         }, 3000);
         
-    } catch (err) {
-        console.error('Error:', err);
+    } catch (error) {
+        console.error('Error:', error);
         setLoading(false);
         
         const statusDiv = document.getElementById('status');
-        statusDiv.textContent = 'Error submitting form. Please try again.';
+        statusDiv.textContent = '❌ Error submitting form. Please try again.';
         statusDiv.className = 'error';
         statusDiv.style.display = 'block';
         
-        // Clear error message after 3 seconds
         setTimeout(() => {
             statusDiv.style.display = 'none';
         }, 3000);
     }
 });
 
-// Real-time validation (optional - removes error when user starts typing)
+// Real-time validation
 const fields = ['name', 'email', 'department', 'message'];
 fields.forEach(field => {
     const element = document.getElementById(field);
@@ -374,13 +374,7 @@ fields.forEach(field => {
     }
 });
 
-// Special handling for email real-time validation
-document.getElementById('email').addEventListener('input', function() {
-    this.classList.remove('error-border');
-    document.getElementById('emailError').textContent = '';
-});
-
-// Phone number validation (optional - only numbers)
+// Phone number validation - only numbers
 document.getElementById('phone').addEventListener('input', function(e) {
     this.value = this.value.replace(/[^0-9]/g, '');
 });
