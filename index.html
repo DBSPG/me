@@ -144,7 +144,6 @@
             color: red;
         }
         
-        /* Year input group */
         .year-group {
             display: flex;
             gap: 10px;
@@ -207,7 +206,7 @@
 <div class="container">
     <h2>🎓 PhD Student Registration Form</h2>
 
-    <form id="phdForm" enctype="multipart/form-data">
+    <form id="phdForm">
         <label>Full Name <span class="required-star">*</span></label>
         <input type="text" name="name" id="name" placeholder="Enter your full name">
         <span class="field-error" id="nameError"></span>
@@ -258,7 +257,6 @@
         </div>
         
         <div class="year-input-wrapper">
-            <!-- Dropdown Year -->
             <div id="dropdownYearDiv" class="dropdown-year-input">
                 <select name="enrollmentYear" id="enrollmentYear">
                     <option value="">-- Select Year --</option>
@@ -281,7 +279,6 @@
                 </select>
             </div>
             
-            <!-- Custom Year Input -->
             <div id="customYearDiv" class="custom-year-input">
                 <input type="number" name="customYear" id="customYear" placeholder="Enter year (e.g., 2023)" min="1950" max="2030">
             </div>
@@ -312,7 +309,6 @@
     <div id="status"></div>
 </div>
 
-<!-- Popup -->
 <div id="thankYouModal" class="modal">
     <div class="modal-content">
         <h2>🙏 Registration Successful!</h2>
@@ -322,7 +318,7 @@
 </div>
 
 <script>
-// ⚠️ APNI URL YAHAN LAGA DO
+// 🔴 IMPORTANT: APNI GOOGLE Apps Script URL YAHAN LAGA DO 🔴
 const scriptURL = 'https://script.google.com/macros/s/AKfycbwT37Qvq1qRfgjUFLYcx69TUd0FZAY_182nKIBiVnusjFc9fWEB3Go0qPSTAUa76z1C/exec';
 
 const form = document.getElementById('phdForm');
@@ -528,7 +524,7 @@ window.onclick = function(event) {
     }
 }
 
-// ✅ MAIN FORM SUBMIT HANDLER
+// ✅ MAIN FORM SUBMIT - CORRECTED VERSION (no-cors removed)
 form.addEventListener('submit', async (e) => {
     e.preventDefault();
     
@@ -564,51 +560,61 @@ form.addEventListener('submit', async (e) => {
             fileBase64: fileBase64
         };
         
-        console.log("Sending object keys:", Object.keys(formObject));
-        console.log("Name value:", formObject.name);
-        console.log("Email value:", formObject.email);
+        console.log("Sending data to:", scriptURL);
+        console.log("Data keys:", Object.keys(formObject));
         
-        // ✅ TRY WITH 'no-cors' mode
+        // ✅ CORRECT: No 'no-cors' mode, proper CORS fetch
         const response = await fetch(scriptURL, {
             method: 'POST',
-            mode: 'no-cors',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(formObject)
         });
         
-        console.log("Fetch completed (no-cors mode)");
+        console.log("Response status:", response.status);
         
-        // no-cors mode mein response nahi milta, assume success
-        form.reset();
-        document.getElementById('fileName').textContent = '';
-        document.querySelector('input[name="yearType"][value="dropdown"]').checked = true;
-        dropdownYearDiv.classList.remove('hide');
-        customYearDiv.classList.remove('show');
-        enrollmentYearSelect.value = '';
-        customYearInput.value = '';
-        setLoading(false);
-        showPopup();
+        // Parse response
+        const result = await response.json();
+        console.log("Response data:", result);
         
-        const statusDiv = document.getElementById('status');
-        statusDiv.textContent = '✓ Application submitted successfully!';
-        statusDiv.className = 'success';
-        statusDiv.style.display = 'block';
-        setTimeout(() => {
-            statusDiv.style.display = 'none';
-        }, 3000);
+        if (result.success) {
+            // Success - reset form
+            form.reset();
+            document.getElementById('fileName').textContent = '';
+            document.querySelector('input[name="yearType"][value="dropdown"]').checked = true;
+            dropdownYearDiv.classList.remove('hide');
+            customYearDiv.classList.remove('show');
+            enrollmentYearSelect.value = '';
+            customYearInput.value = '';
+            
+            setLoading(false);
+            showPopup();
+            
+            const statusDiv = document.getElementById('status');
+            statusDiv.textContent = '✓ Application submitted successfully!';
+            statusDiv.className = 'success';
+            statusDiv.style.display = 'block';
+            
+            setTimeout(() => {
+                statusDiv.style.display = 'none';
+            }, 3000);
+        } else {
+            throw new Error(result.error || "Submission failed");
+        }
         
     } catch (error) {
         console.error('Fetch Error:', error);
         setLoading(false);
+        
         const statusDiv = document.getElementById('status');
         statusDiv.textContent = '❌ Error: ' + error.message;
         statusDiv.className = 'error';
         statusDiv.style.display = 'block';
+        
         setTimeout(() => {
             statusDiv.style.display = 'none';
-        }, 3000);
+        }, 5000);
     }
 });
 
