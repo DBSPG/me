@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Working Form with Google Sheets</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 500px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f0f2f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            position: relative;
+            z-index: 1;
+        }
+        h2 {
+            text-align: center;
+            color: #1a73e8;
+            margin-bottom: 30px;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0 20px 0;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        input:focus, textarea:focus {
+            border-color: #1a73e8;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(26,115,232,0.1);
+        }
+        label {
+            font-weight: 600;
+            color: #333;
+            font-size: 14px;
+        }
+        button {
+            background: #1a73e8;
+            color: white;
+            padding: 14px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background: #1557b0;
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        #status {
+            margin-top: 20px;
+            padding: 12px;
+            border-radius: 8px;
+            display: none;
+            text-align: center;
+            font-weight: 500;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            display: block;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            display: block;
+        }
+        .footer {
+            margin-top: 20px;
+            text-align: center;
+            color: #666;
+            font-size: 12px;
+        }
+        
+        /* Popup Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .modal-content {
+            background-color: white;
+            margin: 20% auto;
+            padding: 30px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            position: relative;
+            animation: slideDown 0.4s ease-out;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        @keyframes slideDown {
+            from {
+                transform: translateY(-100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            background: #4CAF50;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            animation: scaleIn 0.5s ease-out 0.2s both;
+        }
+        
+        @keyframes scaleIn {
+            from {
+                transform: scale(0);
+            }
+            to {
+                transform: scale(1);
+            }
+        }
+        
+        .success-icon svg {
+            width: 50px;
+            height: 50px;
+            fill: white;
+        }
+        
+        .modal h2 {
+            color: #333;
+            margin-bottom: 10px;
+            animation: fadeInUp 0.5s ease-out 0.3s both;
+        }
+        
+        .modal p {
+            color: #666;
+            margin-bottom: 25px;
+            font-size: 16px;
+            line-height: 1.6;
+            animation: fadeInUp 0.5s ease-out 0.4s both;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        .modal button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: auto;
+            min-width: 150px;
+            animation: fadeInUp 0.5s ease-out 0.5s both;
+        }
+        
+        .modal button:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
+        }
+        
+        /* Close button */
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 28px;
+            font-weight: bold;
+            color: #aaa;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        
+        .close-modal:hover {
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>📝 Contact Form</h2>
+        
+        <form id="contactForm">
+            <div>
+                <label for="name">Full Name *</label>
+                <input type="text" id="name" name="name" placeholder="Enter your full name" required>
+            </div>
+            
+            <div>
+                <label for="email">Email Address *</label>
+                <input type="email" id="email" name="email" placeholder="Enter your email" required>
+            </div>
+            
+            <div>
+                <label for="phone">Phone Number</label>
+                <input type="tel" id="phone" name="phone" placeholder="Enter your phone number">
+            </div>
+            
+            <div>
+                <label for="message">Message *</label>
+                <textarea id="message" name="message" rows="4" placeholder="Enter your message" required></textarea>
+            </div>
+            
+            <button type="submit" id="submitBtn">
+                <span id="btnText">Submit Form</span>
+            </button>
+        </form>
+        
+        <div id="status"></div>
+        <div class="footer">Data will be saved to Google Sheets</div>
+    </div>
+
+    <!-- Thank You Popup Modal -->
+    <div id="thankYouModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            
+            <div class="success-icon">
+                <svg viewBox="0 0 24 24">
+                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+                </svg>
+            </div>
+            
+            <h2>Thank You! 🙏</h2>
+            <p>Your form has been submitted successfully.<br>We'll get back to you soon.</p>
+            
+            <button onclick="closeModal()">Close</button>
+        </div>
+    </div>
+
+    <script>
+        // 🔴 YAHAN APNA URL DAALO
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbxJlI5HweYJbt5DP0jaIxw91GQ4tjc5f8jqncAhdwAIOgC37I3csHCp7iEw0Wl46xcb/exec';
+        
+        const form = document.getElementById('contactForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const btnText = document.getElementById('btnText');
+        const statusDiv = document.getElementById('status');
+        const modal = document.getElementById('thankYouModal');
+
+        // Form submit handler
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Form validation
+            if (!validateForm()) {
+                return;
+            }
+            
+            // Show loading state
+            setLoading(true);
+            
+            try {
+                // FormData banao
+                const formData = new FormData(form);
+                
+                // URL encoded data mein convert karo
+                const urlEncodedData = new URLSearchParams(formData);
+                
+                // Send data to Google Apps Script
+                const response = await fetch(scriptURL, {
+                    method: 'POST',
+                    body: urlEncodedData,
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    }
+                });
+                
+                // Response check karo
+                if (response.ok) {
+                    const result = await response.json();
+                    console.log('Success:', result);
+                    
+                    // Status message show karo
+                    showStatus('✅ Success! Data saved to Google Sheet!', 'success');
+                    
+                    // Form reset karo
+                    form.reset();
+                    
+                    // ⭐ Thank You Popup show karo
+                    setTimeout(() => {
+                        showPopup();
+                    }, 500);
+                    
+                } else {
+                    throw new Error('Server response: ' + response.status);
+                }
+                
+            } catch (error) {
+                console.error('Error:', error);
+                showStatus('❌ Error: ' + error.message, 'error');
+            } finally {
+                setLoading(false);
+            }
+        });
+
+        // Popup show karne ka function
+        function showPopup() {
+            modal.style.display = 'block';
+            
+            // Agar user escape button dabaye to popup band ho
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    closeModal();
+                }
+            });
+        }
+
+        // Popup band karne ka function
+        function closeModal() {
+            modal.style.display = 'none';
+        }
+
+        // Modal ke bahar click karne par band ho
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
+
+        // Form validation function
+        function validateForm() {
+            const name = document.getElementById('name');
+            const email = document.getElementById('email');
+            const message = document.getElementById('message');
+            let isValid = true;
+            
+            // Remove existing error styles
+            [name, email, message].forEach(field => {
+                field.style.borderColor = '#e0e0e0';
+            });
+            
+            // Name validation
+            if (!name.value.trim()) {
+                name.style.borderColor = '#dc3545';
+                isValid = false;
+            }
+            
+            // Email validation
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailPattern.test(email.value)) {
+                email.style.borderColor = '#dc3545';
+                isValid = false;
+            }
+            
+            // Message validation
+            if (!message.value.trim()) {
+                message.style.borderColor = '#dc3545';
+                isValid = false;
+            }
+            
+            if (!isValid) {
+                showStatus('❌ Please fill all required fields correctly.', 'error');
+            }
+            
+            return isValid;
+        }
+
+        // Loading state set karo
+        function setLoading(isLoading) {
+            if (isLoading) {
+                submitBtn.disabled = true;
+                btnText.innerHTML = '⏳ Submitting...';
+            } else {
+                submitBtn.disabled = false;
+                btnText.innerHTML = 'Submit Form';
+            }
+        }
+
+        // Status message dikhao
+        function showStatus(message, type) {
+            statusDiv.textContent = message;
+            statusDiv.className = type;
+            
+            // 5 seconds baad hide karo
+            setTimeout(() => {
+                statusDiv.style.display = 'none';
+            }, 5000);
+        }
+
+        // Pehle se hi check karo ki script reachable hai ya nahi
+        async function checkScript() {
+            try {
+                const response = await fetch(scriptURL, {
+                    method: 'GET',
+                    mode: 'no-cors'
+                });
+                console.log('Script is reachable');
+            } catch (error) {
+                console.log('Script check failed:', error);
+            }
+        }
+        
+        // Page load par script check karo
+        checkScript();
+    </script>
+</body>
+</html>
