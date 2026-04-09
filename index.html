@@ -1,492 +1,229 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>PhD Student Registration Form</title>
+    <title>PhD Registration Form</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
         body {
             font-family: Arial, sans-serif;
-            max-width: 600px;
-            margin: 50px auto;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
             padding: 20px;
-            background: #f0f2f5;
         }
         .container {
+            max-width: 600px;
+            margin: 0 auto;
             background: white;
+            border-radius: 20px;
             padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
         }
         h2 {
             text-align: center;
-            color: #1a73e8;
+            color: #333;
             margin-bottom: 30px;
         }
-
-        input, textarea, select {
-            width: 100%;
-            padding: 12px;
-            margin: 8px 0 20px 0;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            box-sizing: border-box;
-            font-size: 14px;
-            transition: all 0.3s;
-        }
-
-        input:focus, textarea:focus, select:focus {
-            border-color: #1a73e8;
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(26,115,232,0.1);
-        }
-
-        label {
-            font-weight: 600;
-            color: #333;
-        }
-
-        button {
-            background: #1a73e8;
-            color: white;
-            padding: 14px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            width: 100%;
-            font-size: 16px;
-            font-weight: bold;
-            transition: background 0.3s;
-        }
-
-        button:hover {
-            background: #1557b0;
-        }
-
-        button:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-        }
-
-        #status {
-            margin-top: 20px;
-            padding: 12px;
-            border-radius: 8px;
-            display: none;
-            text-align: center;
-        }
-
-        .success {
-            background: #d4edda;
-            color: #155724;
-            display: block;
-        }
-
-        .error {
-            background: #f8d7da;
-            color: #721c24;
-            display: block;
-        }
-
-        .loading {
-            background: #fff3cd;
-            color: #856404;
-            display: block;
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 9999;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.5);
-        }
-
-        .modal-content {
-            background-color: white;
-            margin: 20% auto;
-            padding: 30px;
-            border-radius: 20px;
-            width: 90%;
-            max-width: 400px;
-            text-align: center;
-        }
-
-        .modal-content button {
-            width: auto;
-            padding: 10px 30px;
-            margin-top: 10px;
-        }
-
-        .error-border {
-            border-color: #dc3545 !important;
-        }
-
-        .field-error {
-            color: #dc3545;
-            font-size: 12px;
-            margin-top: -15px;
-            margin-bottom: 10px;
-            display: block;
-        }
-        
-        .file-name {
-            font-size: 12px;
-            color: #666;
-            margin-top: -15px;
-            margin-bottom: 10px;
-        }
-        
-        .required-star {
-            color: red;
-        }
-        
-        .year-group {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-        
-        .year-group select {
-            flex: 2;
-            margin-bottom: 0;
-        }
-        
-        .year-group input {
-            flex: 1;
-            margin-bottom: 0;
-        }
-        
-        .year-toggle {
-            margin: 5px 0 15px 0;
-            font-size: 13px;
-        }
-        
-        .year-toggle input {
-            width: auto;
-            margin-right: 5px;
-            transform: scale(1.1);
-            vertical-align: middle;
-        }
-        
-        .year-toggle label {
-            font-weight: normal;
-            font-size: 13px;
-            margin-right: 15px;
-            cursor: pointer;
-        }
-        
-        .year-input-wrapper {
+        .form-group {
             margin-bottom: 20px;
         }
-        
-        .custom-year-input {
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        .error {
+            color: red;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+        .success-msg {
+            background: #d4edda;
+            color: #155724;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 20px;
+            text-align: center;
+        }
+        .error-msg {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 20px;
+            text-align: center;
+        }
+        .required {
+            color: red;
+        }
+        .year-option {
+            margin: 10px 0;
+        }
+        .year-option label {
+            display: inline;
+            margin-right: 20px;
+            font-weight: normal;
+        }
+        .year-option input {
+            width: auto;
+            margin-right: 5px;
+        }
+        .hidden {
             display: none;
         }
-        
-        .custom-year-input.show {
-            display: block;
-        }
-        
-        .dropdown-year-input {
-            display: block;
-        }
-        
-        .dropdown-year-input.hide {
-            display: none;
+        .file-info {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
         }
     </style>
 </head>
-
 <body>
 <div class="container">
-    <h2>🎓 PhD Student Registration Form</h2>
-
-    <form id="phdForm">
-        <label>Full Name <span class="required-star">*</span></label>
-        <input type="text" name="name" id="name" placeholder="Enter your full name">
-        <span class="field-error" id="nameError"></span>
-
-        <label>Email <span class="required-star">*</span></label>
-        <input type="email" name="email" id="email" placeholder="you@example.com">
-        <span class="field-error" id="emailError"></span>
-
-        <label>Phone <span class="required-star">*</span></label>
-        <input type="tel" name="phone" id="phone" placeholder="10-digit mobile number">
-        <span class="field-error" id="phoneError"></span>
-
-        <label>Department <span class="required-star">*</span></label>
-        <select name="department" id="department">
-            <option value="">-- Select Department --</option>
-            <option value="Botany">Botany</option>
-            <option value="Chemistry">Chemistry</option>
-            <option value="Commerce">Commerce</option>
-            <option value="Computer Applications">Computer Applications</option>
-            <option value="Economics">Economics</option>
-            <option value="Education">Education</option>
-            <option value="Electronics">Electronics</option>
-            <option value="English">English</option>
-            <option value="Geography">Geography</option>
-            <option value="Hindi">Hindi</option>
-            <option value="History">History</option>
-            <option value="Library Science">Library Science</option>
-            <option value="Mathematics">Mathematics</option>
-            <option value="Microbiology">Microbiology</option>
-            <option value="Physical Education">Physical Education</option>
-            <option value="Physics">Physics</option>
-            <option value="Political Science">Political Science</option>
-            <option value="Sanskrit">Sanskrit</option>
-            <option value="Sociology">Sociology</option>
-            <option value="Teacher Education (B.Ed.)">Teacher Education (B.Ed.)</option>
-            <option value="Zoology">Zoology</option>
-        </select>
-        <span class="field-error" id="departmentError"></span>
-
-        <label>PhD Enrollment Year <span class="required-star">*</span></label>
-        <div class="year-toggle">
-            <label>
-                <input type="radio" name="yearType" value="dropdown" checked> Select from dropdown
-            </label>
-            <label>
-                <input type="radio" name="yearType" value="custom"> Enter custom year
-            </label>
+    <h2>🎓 PhD Registration Form</h2>
+    
+    <form id="registrationForm">
+        <div class="form-group">
+            <label>Full Name <span class="required">*</span></label>
+            <input type="text" id="name" required>
         </div>
         
-        <div class="year-input-wrapper">
-            <div id="dropdownYearDiv" class="dropdown-year-input">
-                <select name="enrollmentYear" id="enrollmentYear">
-                    <option value="">-- Select Year --</option>
-                    <option value="2015">2015</option>
-                    <option value="2016">2016</option>
-                    <option value="2017">2017</option>
-                    <option value="2018">2018</option>
-                    <option value="2019">2019</option>
-                    <option value="2020">2020</option>
-                    <option value="2021">2021</option>
-                    <option value="2022">2022</option>
-                    <option value="2023">2023</option>
-                    <option value="2024">2024</option>
-                    <option value="2025">2025</option>
-                    <option value="2026">2026</option>
-                    <option value="2027">2027</option>
-                    <option value="2028">2028</option>
-                    <option value="2029">2029</option>
-                    <option value="2030">2030</option>
-                </select>
-            </div>
-            
-            <div id="customYearDiv" class="custom-year-input">
-                <input type="number" name="customYear" id="customYear" placeholder="Enter year (e.g., 2023)" min="1950" max="2030">
-            </div>
+        <div class="form-group">
+            <label>Email <span class="required">*</span></label>
+            <input type="email" id="email" required>
         </div>
-        <span class="field-error" id="enrollmentYearError"></span>
-
-        <label>JRF / Non-JRF <span class="required-star">*</span></label>
-        <select name="jrfStatus" id="jrfStatus">
-            <option value="">-- Select Status --</option>
-            <option value="JRF">JRF (Junior Research Fellowship)</option>
-            <option value="Non-JRF">Non-JRF</option>
-        </select>
-        <span class="field-error" id="jrfStatusError"></span>
-
-        <label>Guide/Supervisor Name <span class="required-star">*</span></label>
-        <input type="text" name="guideName" id="guideName" placeholder="Enter your guide's full name">
-        <span class="field-error" id="guideNameError"></span>
-
-        <label>Upload Fee Receipt <span class="required-star">*</span></label>
-        <input type="file" name="feeReceipt" id="feeReceipt" accept=".pdf,.jpg,.jpeg,.png">
-        <div class="file-name" id="fileName"></div>
-        <span class="field-error" id="feeReceiptError"></span>
-        <small style="color: #666;">Supported: PDF, JPG, PNG (Max 2MB)</small>
-
+        
+        <div class="form-group">
+            <label>Phone <span class="required">*</span></label>
+            <input type="tel" id="phone" required>
+        </div>
+        
+        <div class="form-group">
+            <label>Department <span class="required">*</span></label>
+            <select id="department" required>
+                <option value="">Select Department</option>
+                <option>Botany</option>
+                <option>Chemistry</option>
+                <option>Commerce</option>
+                <option>Computer Applications</option>
+                <option>Economics</option>
+                <option>Education</option>
+                <option>Electronics</option>
+                <option>English</option>
+                <option>Geography</option>
+                <option>Hindi</option>
+                <option>History</option>
+                <option>Library Science</option>
+                <option>Mathematics</option>
+                <option>Microbiology</option>
+                <option>Physical Education</option>
+                <option>Physics</option>
+                <option>Political Science</option>
+                <option>Sanskrit</option>
+                <option>Sociology</option>
+                <option>Zoology</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label>Enrollment Year <span class="required">*</span></label>
+            <div class="year-option">
+                <label>
+                    <input type="radio" name="yearType" value="dropdown" checked> Select from list
+                </label>
+                <label>
+                    <input type="radio" name="yearType" value="custom"> Enter manually
+                </label>
+            </div>
+            <select id="yearDropdown">
+                <option value="">Select Year</option>
+                <option>2020</option><option>2021</option><option>2022</option>
+                <option>2023</option><option>2024</option><option>2025</option>
+            </select>
+            <input type="number" id="yearCustom" placeholder="Enter year" class="hidden">
+        </div>
+        
+        <div class="form-group">
+            <label>JRF Status <span class="required">*</span></label>
+            <select id="jrfStatus" required>
+                <option value="">Select Status</option>
+                <option>JRF</option>
+                <option>Non-JRF</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label>Guide Name <span class="required">*</span></label>
+            <input type="text" id="guideName" required>
+        </div>
+        
+        <div class="form-group">
+            <label>Fee Receipt <span class="required">*</span></label>
+            <input type="file" id="fileUpload" accept=".pdf,.jpg,.png">
+            <div class="file-info">Max 2MB (PDF, JPG, PNG)</div>
+        </div>
+        
         <button type="submit" id="submitBtn">Submit Application</button>
     </form>
-
-    <div id="status"></div>
-</div>
-
-<div id="thankYouModal" class="modal">
-    <div class="modal-content">
-        <h2>🙏 Registration Successful!</h2>
-        <p>Your PhD details have been submitted successfully.</p>
-        <button onclick="closeModal()">Close</button>
-    </div>
+    
+    <div id="message"></div>
 </div>
 
 <script>
-// 🔴 IMPORTANT: APNI GOOGLE Apps Script URL YAHAN LAGA DO 🔴
-const scriptURL = 'https://script.google.com/macros/s/AKfycbwT37Qvq1qRfgjUFLYcx69TUd0FZAY_182nKIBiVnusjFc9fWEB3Go0qPSTAUa76z1C/exec';
+// 🔴 APNA NAYA URL YAHAN LAGAO 🔴
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyKHvrUbmppYdrAUy-QyeTf4r1KwQ0-n_IeGSUe6NiAZGmLYXg2-psDZ11zPVcy0PtS/exec';
 
-const form = document.getElementById('phdForm');
-const modal = document.getElementById('thankYouModal');
-const submitBtn = document.getElementById('submitBtn');
+// Year toggle
+const yearDropdown = document.getElementById('yearDropdown');
+const yearCustom = document.getElementById('yearCustom');
+const radioDropdown = document.querySelector('input[value="dropdown"]');
+const radioCustom = document.querySelector('input[value="custom"]');
 
-// Year toggle functionality
-const yearRadios = document.querySelectorAll('input[name="yearType"]');
-const dropdownYearDiv = document.getElementById('dropdownYearDiv');
-const customYearDiv = document.getElementById('customYearDiv');
-const enrollmentYearSelect = document.getElementById('enrollmentYear');
-const customYearInput = document.getElementById('customYear');
-
-yearRadios.forEach(radio => {
-    radio.addEventListener('change', function() {
-        if (this.value === 'dropdown') {
-            dropdownYearDiv.classList.remove('hide');
-            customYearDiv.classList.remove('show');
-            enrollmentYearSelect.required = true;
-            customYearInput.required = false;
-            customYearInput.value = '';
-            document.getElementById('enrollmentYearError').textContent = '';
-            enrollmentYearSelect.classList.remove('error-border');
-        } else {
-            dropdownYearDiv.classList.add('hide');
-            customYearDiv.classList.add('show');
-            enrollmentYearSelect.required = false;
-            customYearInput.required = true;
-            enrollmentYearSelect.value = '';
-            document.getElementById('enrollmentYearError').textContent = '';
-            customYearInput.classList.remove('error-border');
-        }
-    });
+radioDropdown.addEventListener('change', () => {
+    yearDropdown.classList.remove('hidden');
+    yearCustom.classList.add('hidden');
+    yearCustom.value = '';
 });
 
-// Initialize
-dropdownYearDiv.classList.remove('hide');
-customYearDiv.classList.remove('show');
-
-// Show file name when selected
-document.getElementById('feeReceipt').addEventListener('change', function(e) {
-    const file = e.target.files[0];
-    const fileName = file?.name || '';
-    document.getElementById('fileName').textContent = fileName ? `Selected: ${fileName}` : '';
-    if (file) {
-        document.getElementById('feeReceiptError').textContent = '';
-        document.getElementById('feeReceipt').classList.remove('error-border');
-    }
+radioCustom.addEventListener('change', () => {
+    yearDropdown.classList.add('hidden');
+    yearCustom.classList.remove('hidden');
+    yearDropdown.value = '';
 });
 
-function clearErrors() {
-    const fields = ['name', 'email', 'phone', 'department', 'jrfStatus', 'guideName', 'feeReceipt'];
-    fields.forEach(field => {
-        const element = document.getElementById(field);
-        if (element) element.classList.remove('error-border');
-        const errorSpan = document.getElementById(field + 'Error');
-        if (errorSpan) errorSpan.textContent = '';
-    });
-    enrollmentYearSelect.classList.remove('error-border');
-    customYearInput.classList.remove('error-border');
-    document.getElementById('enrollmentYearError').textContent = '';
-    const statusDiv = document.getElementById('status');
-    statusDiv.style.display = 'none';
-    statusDiv.className = '';
-    statusDiv.textContent = '';
-}
-
-function validateForm() {
-    clearErrors();
-    
-    const name = document.getElementById('name');
-    const email = document.getElementById('email');
-    const phone = document.getElementById('phone');
-    const department = document.getElementById('department');
-    const jrfStatus = document.getElementById('jrfStatus');
-    const guideName = document.getElementById('guideName');
-    const feeReceipt = document.getElementById('feeReceipt');
-    
-    let isValid = true;
-    
-    if (!name.value.trim()) {
-        document.getElementById('nameError').textContent = 'Full name is required';
-        name.classList.add('error-border');
-        isValid = false;
-    }
-    
-    const emailValue = email.value.trim();
-    if (!emailValue) {
-        document.getElementById('emailError').textContent = 'Email is required';
-        email.classList.add('error-border');
-        isValid = false;
-    } else if (!emailValue.includes('@') || !emailValue.includes('.')) {
-        document.getElementById('emailError').textContent = 'Enter a valid email address';
-        email.classList.add('error-border');
-        isValid = false;
-    }
-    
-    const phoneValue = phone.value.trim();
-    if (!phoneValue) {
-        document.getElementById('phoneError').textContent = 'Phone number is required';
-        phone.classList.add('error-border');
-        isValid = false;
-    } else if (!/^\d{10}$/.test(phoneValue)) {
-        document.getElementById('phoneError').textContent = 'Enter a valid 10-digit phone number';
-        phone.classList.add('error-border');
-        isValid = false;
-    }
-    
-    if (!department.value) {
-        document.getElementById('departmentError').textContent = 'Please select a department';
-        department.classList.add('error-border');
-        isValid = false;
-    }
-    
-    const yearType = document.querySelector('input[name="yearType"]:checked').value;
-    if (yearType === 'dropdown') {
-        if (!enrollmentYearSelect.value) {
-            document.getElementById('enrollmentYearError').textContent = 'Please select enrollment year';
-            enrollmentYearSelect.classList.add('error-border');
-            isValid = false;
-        }
-    } else {
-        const yearValue = customYearInput.value;
-        if (!yearValue) {
-            document.getElementById('enrollmentYearError').textContent = 'Please enter enrollment year';
-            customYearInput.classList.add('error-border');
-            isValid = false;
-        } else if (yearValue < 1950 || yearValue > 2030) {
-            document.getElementById('enrollmentYearError').textContent = 'Please enter a valid year (1950-2030)';
-            customYearInput.classList.add('error-border');
-            isValid = false;
-        }
-    }
-    
-    if (!jrfStatus.value) {
-        document.getElementById('jrfStatusError').textContent = 'Please select JRF/Non-JRF status';
-        jrfStatus.classList.add('error-border');
-        isValid = false;
-    }
-    
-    if (!guideName.value.trim()) {
-        document.getElementById('guideNameError').textContent = 'Guide/Supervisor name is required';
-        guideName.classList.add('error-border');
-        isValid = false;
-    }
-    
-    if (!feeReceipt.files.length) {
-        document.getElementById('feeReceiptError').textContent = 'Please upload fee receipt';
-        feeReceipt.classList.add('error-border');
-        isValid = false;
-    } else {
-        const file = feeReceipt.files[0];
-        const validTypes = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png'];
-        if (!validTypes.includes(file.type)) {
-            document.getElementById('feeReceiptError').textContent = 'Only PDF, JPG, JPEG, PNG files allowed';
-            feeReceipt.classList.add('error-border');
-            isValid = false;
-        }
-        if (file.size > 2 * 1024 * 1024) {
-            document.getElementById('feeReceiptError').textContent = 'File size should be less than 2MB';
-            feeReceipt.classList.add('error-border');
-            isValid = false;
-        }
-    }
-    
-    return isValid;
-}
-
+// File to Base64
 function fileToBase64(file) {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -496,153 +233,112 @@ function fileToBase64(file) {
     });
 }
 
-function setLoading(isLoading) {
-    if (isLoading) {
-        submitBtn.disabled = true;
-        submitBtn.textContent = 'Submitting...';
-        const statusDiv = document.getElementById('status');
-        statusDiv.textContent = 'Please wait...';
-        statusDiv.className = 'loading';
-        statusDiv.style.display = 'block';
-    } else {
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Submit Application';
-    }
+// Show message
+function showMessage(text, isError = false) {
+    const msgDiv = document.getElementById('message');
+    msgDiv.innerHTML = `<div class="${isError ? 'error-msg' : 'success-msg'}">${text}</div>`;
+    setTimeout(() => {
+        msgDiv.innerHTML = '';
+    }, 5000);
 }
 
-function showPopup() {
-    modal.style.display = 'block';
-}
-
-function closeModal() {
-    modal.style.display = 'none';
-}
-
-window.onclick = function(event) {
-    if (event.target === modal) {
-        modal.style.display = 'none';
-    }
-}
-
-// ✅ MAIN FORM SUBMIT - CORRECTED VERSION (no-cors removed)
-form.addEventListener('submit', async (e) => {
+// Submit form
+document.getElementById('registrationForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     
-    console.log("Form submit started");
-    
-    if (!validateForm()) {
-        console.log("Validation failed");
-        return;
-    }
-    
-    setLoading(true);
+    const submitBtn = document.getElementById('submitBtn');
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Submitting...';
     
     try {
-        const file = document.getElementById('feeReceipt').files[0];
-        console.log("File selected:", file?.name);
+        // Get values
+        const name = document.getElementById('name').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const phone = document.getElementById('phone').value.trim();
+        const department = document.getElementById('department').value;
+        const jrfStatus = document.getElementById('jrfStatus').value;
+        const guideName = document.getElementById('guideName').value.trim();
+        const file = document.getElementById('fileUpload').files[0];
         
+        // Validate
+        if (!name || !email || !phone || !department || !jrfStatus || !guideName) {
+            throw new Error('Please fill all required fields');
+        }
+        
+        if (!/^\d{10}$/.test(phone)) {
+            throw new Error('Enter valid 10-digit phone number');
+        }
+        
+        if (!email.includes('@')) {
+            throw new Error('Enter valid email address');
+        }
+        
+        if (!file) {
+            throw new Error('Please upload fee receipt');
+        }
+        
+        if (file.size > 2 * 1024 * 1024) {
+            throw new Error('File size must be less than 2MB');
+        }
+        
+        // Get year
+        let enrollmentYear;
+        if (radioDropdown.checked) {
+            enrollmentYear = yearDropdown.value;
+            if (!enrollmentYear) throw new Error('Please select enrollment year');
+        } else {
+            enrollmentYear = yearCustom.value;
+            if (!enrollmentYear) throw new Error('Please enter enrollment year');
+        }
+        
+        // Convert file to base64
         const fileBase64 = await fileToBase64(file);
-        console.log("File converted to base64, length:", fileBase64.length);
         
-        const yearType = document.querySelector('input[name="yearType"]:checked').value;
-        let enrollmentYear = yearType === 'dropdown' ? enrollmentYearSelect.value : customYearInput.value;
-        
-        const formObject = {
-            name: document.getElementById('name').value.trim(),
-            email: document.getElementById('email').value.trim(),
-            phone: document.getElementById('phone').value.trim(),
-            department: document.getElementById('department').value,
+        // Prepare data
+        const formData = {
+            name: name,
+            email: email,
+            phone: phone,
+            department: department,
             enrollmentYear: enrollmentYear,
-            jrfStatus: document.getElementById('jrfStatus').value,
-            guideName: document.getElementById('guideName').value.trim(),
+            jrfStatus: jrfStatus,
+            guideName: guideName,
             fileName: file.name,
             fileType: file.type,
             fileBase64: fileBase64
         };
         
-        console.log("Sending data to:", scriptURL);
-        console.log("Data keys:", Object.keys(formObject));
+        console.log('Sending to:', SCRIPT_URL);
         
-        // ✅ CORRECT: No 'no-cors' mode, proper CORS fetch
-        const response = await fetch(scriptURL, {
+        // Send to Google Script
+        const response = await fetch(SCRIPT_URL, {
             method: 'POST',
+            mode: 'cors',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(formObject)
+            body: JSON.stringify(formData)
         });
         
-        console.log("Response status:", response.status);
-        
-        // Parse response
         const result = await response.json();
-        console.log("Response data:", result);
         
         if (result.success) {
-            // Success - reset form
-            form.reset();
-            document.getElementById('fileName').textContent = '';
-            document.querySelector('input[name="yearType"][value="dropdown"]').checked = true;
-            dropdownYearDiv.classList.remove('hide');
-            customYearDiv.classList.remove('show');
-            enrollmentYearSelect.value = '';
-            customYearInput.value = '';
-            
-            setLoading(false);
-            showPopup();
-            
-            const statusDiv = document.getElementById('status');
-            statusDiv.textContent = '✓ Application submitted successfully!';
-            statusDiv.className = 'success';
-            statusDiv.style.display = 'block';
-            
-            setTimeout(() => {
-                statusDiv.style.display = 'none';
-            }, 3000);
+            showMessage('✅ Registration successful!');
+            document.getElementById('registrationForm').reset();
+            yearDropdown.classList.remove('hidden');
+            yearCustom.classList.add('hidden');
+            radioDropdown.checked = true;
         } else {
-            throw new Error(result.error || "Submission failed");
+            throw new Error(result.error || 'Submission failed');
         }
         
     } catch (error) {
-        console.error('Fetch Error:', error);
-        setLoading(false);
-        
-        const statusDiv = document.getElementById('status');
-        statusDiv.textContent = '❌ Error: ' + error.message;
-        statusDiv.className = 'error';
-        statusDiv.style.display = 'block';
-        
-        setTimeout(() => {
-            statusDiv.style.display = 'none';
-        }, 5000);
+        console.error('Error:', error);
+        showMessage('❌ ' + error.message, true);
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Submit Application';
     }
-});
-
-// Real-time validation
-const validationFields = ['name', 'email', 'phone', 'department', 'jrfStatus', 'guideName'];
-validationFields.forEach(field => {
-    const element = document.getElementById(field);
-    if (element) {
-        element.addEventListener('input', function() {
-            this.classList.remove('error-border');
-            const errorSpan = document.getElementById(field + 'Error');
-            if (errorSpan) errorSpan.textContent = '';
-        });
-    }
-});
-
-document.getElementById('phone').addEventListener('input', function(e) {
-    this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);
-});
-
-customYearInput.addEventListener('input', function() {
-    this.classList.remove('error-border');
-    document.getElementById('enrollmentYearError').textContent = '';
-});
-
-enrollmentYearSelect.addEventListener('change', function() {
-    this.classList.remove('error-border');
-    document.getElementById('enrollmentYearError').textContent = '';
 });
 </script>
 </body>
